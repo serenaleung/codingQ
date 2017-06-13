@@ -17,7 +17,7 @@ class ClickHere extends React.Component {
 
   onRenderScreen() {
     if(this.state.showInput) {
-      return <InputField props={this.state.amount} />
+      return <InputField amount={this.state.amount} />
     }
     return <button className='btn' onClick={this.handleClick}>收款</button>
   }

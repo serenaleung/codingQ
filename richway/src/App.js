@@ -13,7 +13,7 @@ class App extends Component {
 
   displayData() {
     if(!this.state.amount) {
-      return <td><ClickHere props={this.state.amount} /></td>
+      return <td><ClickHere amount={this.state.amount} /></td>
     }
     return <td>{this.state.amount}</td>
   }
@@ -25,7 +25,7 @@ class App extends Component {
         </div>
 
         <table>
-           <thead>
+          <thead>
                <tr>
                    <th>学员</th>
                    <th>年龄</th>

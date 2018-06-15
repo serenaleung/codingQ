@@ -5,42 +5,36 @@ let students = require('../data.json');
 class Job extends React.Component {
 	constructor(props) {
 		super(props);
-			console.log('job constructor', this.props);
+			console.log('Job constructor', this.props);
 			this.state = {
-				jobs: '',
-				jobId: '',
-				jobTitle: '',
-				jobEmployer: '',
-				jobLocation: '',
-				jobDate: '',
+				jobId: this.props.id,
+				jobTitle: this.props.jobTitle,
+				jobEmployer: this.props.employerName,
+				jobLocation: this.props.jobLocation,
+				jobDate: this.props.startDate,
 				jobDescription: false
 			}
 			this.handleInput = this.handleInput.bind(this);
 	}
 
-	componentDidMount() {
-		this.setData();
+	componentDidUpdate() {
+		//this.setData();
+		console.log('job componentDidUpdate', this.props.jobs);
 	}
 
 	setData(){
-		console.log('setData', this.props);
-		let student = students.filter( item => item.id === this.state.studentId );
-			for (let job in student.outcomes) {
-				console.log("job", job);
-
+		console.log('job setData', this.props.jobs);
+			// for (const job of this.props.jobs) {
 				this.setState(
 					{
-						jobId: job.id,
-						jobTitle: job.jobTitle,
-						jobEmployer: job.employerName,
-						jobLocation: job.jobLocation,
-						jobDate: job.startDate,
+						jobId: this.props.jobs[0].id,
+						jobTitle: this.props.jobs[0].jobTitle,
+						jobEmployer: this.props.jobs[0].employerName,
+						jobLocation: this.props.jobs[0].jobLocation,
+						jobDate: this.props.jobs[0].startDate,
 						jobDescription: false
-					}
-				)
-				// console.log("student.outcomes[0].jobTitle", student.outcomes);
-				console.log("job", job.jobTitle);
-			}
+					})
+				// }
 		}
 
 	handleInput(event) {

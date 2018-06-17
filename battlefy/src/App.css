@@ -76,17 +76,6 @@ button {
 	padding: 1rem 0 0.4rem;
 }
 
-/* .pagination {
-display: flex; flex-direction: row; justify-content: center; align-items: center;
-} */
-
-/* .dot {
-width: 1rem;
-height: 1rem;
-border-radius: 50%;
-background-color: red;
-} */
-
 input[type=text], .DayPickerInput > input {
 	background: transparent !important;
 	border: none;

@@ -115,21 +115,11 @@ class StudentDetails extends React.Component {
 		)
 	}
 
-	// state = {
-	//   index: 0,
-	// };
-
 	handleChangeIndex = index => {
 		this.setState({
 			index,
 		});
 	};
-
-	// handleClick(dotIndex) {
-	//  this.setState({
-	// 	 index: dotIndex
-	//  });
-	// }
 
 	render() {
 		const { index } = this.state;
@@ -172,7 +162,7 @@ class StudentDetails extends React.Component {
 							<div className="flexColumn itemWidth">
 								<div>
 									<label>
-										Previous Occupation:
+										Prev. Occupation:
 										<input type="text" name="email" value={this.state.prevOccupation} onChange={this.handleInput}></input>
 									</label>
 								</div>
@@ -203,14 +193,7 @@ class StudentDetails extends React.Component {
 						)
 					}
 				</AutoPlaySwipeableViews>
-				{/* <div className="pagination">
-					{
-					this.props.outcomes.map((job,i) =>
-					<button className="dot"></button>
-					)
 
-					}
-				</div> */}
 			</div>
 )
 }

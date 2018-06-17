@@ -1,34 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Job from './Job.js'
 import addrs from 'email-addresses';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
 import SwipeableViews from 'react-swipeable-views';
+import 'react-day-picker/lib/style.css';
+
+import { autoPlay } from 'react-swipeable-views-utils';
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 let caAreaCode = [403, 587, 780, 825, 250, 778, 236, 604, 204, 431, 506, 709, 867, 902, 782, 867, 365, 613, 807, 226, 289, 437, 416, 519, 647, 905, 249, 343, 548, 705, 782, 902, 579, 873, 514, 581, 819, 438, 418, 450, 639, 306, 867];
-
-const styles = {
-  slide: {
-    padding: 15,
-    minHeight: 100,
-    color: '#fff',
-  },
-  slide1: {
-    background: '#FEA900',
-  },
-  slide2: {
-    background: '#B3DC4A',
-  },
-  slide3: {
-    background: '#6AC0FF',
-  },
-};
 
 class StudentDetails extends React.Component {
 
 	constructor(props) {
 		super(props);
-		console.log('student props', props)
 		this.state = {
 			studentId: props.id,
 			studentName: `${props.firstName} ${props.lastName}`,
@@ -36,15 +21,13 @@ class StudentDetails extends React.Component {
 			email: props.email,
 			postalCode: props.postalCode,
 			birthday: props.dateOfBirth,
+			enrollDate: props.enrollmentDate,
+			prevOccupation: props.prevOccupation,
 			banner: props.bannerUrl,
 			image: props.photoUrl
-			}
-			this.handleClick = this.handleClick.bind(this);
-			this.handleInput = this.handleInput.bind(this);
-	}
-
-	componentDidMount() {
-		// this.setData();
+		}
+		this.handleClick = this.handleClick.bind(this);
+		this.handleInput = this.handleInput.bind(this);
 	}
 
 	isEmail() {
@@ -61,7 +44,11 @@ class StudentDetails extends React.Component {
 	}
 
 	isCaPhone() {
-		if (this.state.phone.length >= 3 && caAreaCode.indexOf(parseInt(this.state.phone.substring(0, 3))) < 0) {
+		let phoneNumber = this.state.phone.replace(/\D/g,'');
+
+		console.log("phoneNumber", phoneNumber, phoneNumber.length, caAreaCode.indexOf(parseInt(phoneNumber.substring(0, 3))))
+
+		if (this.state.phone.length >= 3 && caAreaCode.indexOf(parseInt(phoneNumber.substring(0, 3))) < 0) {
 			return (
 				<div><label className="error">Please enter a Canadian phone number.</label></div>
 			)
@@ -82,8 +69,8 @@ class StudentDetails extends React.Component {
 	birthday() {
 		return (
 			<div>
-				<p>Please type a day:</p>
-				<DayPickerInput value={this.state.birthday} onDayChange={day =>
+				<label>birthday</label>
+				<DayPickerInput format="YYYY-MM-DD" className="datePicker" value={this.state.birthday} onDayChange={day =>
 					{
 						this.setState({birthday : day});
 					}
@@ -103,7 +90,7 @@ class StudentDetails extends React.Component {
 	}
 
 	isEmpty(event) {
-		if (event.length < 1) {
+		if (event == null || event.length < 0) {
 			return (
 				<div>
 					<label className="error">Input field cannot be empty</label>
@@ -122,76 +109,111 @@ class StudentDetails extends React.Component {
 		event.preventDefault();
 	}
 
-	displayResult() {
-		if(this.state.showData && this.state.studentName) {
-			return (
-			<div>
-				<div>{this.state.studentName}</div>
-				<div>{this.state.email}</div>
-			</div>
-			)
-		}
-	}
-
 	job() {
 		return (
 			<div><Job jobs={this.state.jobs}/></div>
 		)
 	}
 
+	// state = {
+	//   index: 0,
+	// };
+
+	handleChangeIndex = index => {
+		this.setState({
+			index,
+		});
+	};
+
+	// handleClick(dotIndex) {
+	//  this.setState({
+	// 	 index: dotIndex
+	//  });
+	// }
+
 	render() {
+		const { index } = this.state;
+
 		return(
 			<div>
-				<img src={this.state.banner}/>
-				<img src={this.state.image} width="100" height="100"/>
+
 				<form>
-					<label>
-						Student ID:
-						<input type="text" name="studentId" placeholder="Student ID" value={this.state.studentId} onChange={this.handleInput}></input>
-					</label>
-					<label>
-						Name:
-						<input type="text" name="studentName" placeholder="Student Name" value={this.state.studentName} onChange={this.handleInput}></input>
-					</label>
-					{this.isEmpty(this.state.studentName)}
-					<label>
-						Email:
-						<input type="text" name="email" placeholder="Email" value={this.state.email} onChange={this.handleInput}></input>
-					</label>
-					<label>
-						Postal Code:
-						<input type="text" name="postalCode" placeholder="Postal Code" value={this.state.postalCode} onChange={this.handleInput}></input>
-					</label>
-					<label>
-						Phone Number:
-						<input type="text" name="phone" placeholder="Phone Number" value={this.state.phone} onChange={this.handleInput}></input>
-					</label>
-					{this.isEmail()}
+					<div className="imgContainer flexColumn startOnAxis" style={{backgroundImage: `url(${this.state.banner})`}}>
+						<div className="flexRow alignSelfEnd"><button onClick={this.handleClick}>Save</button></div>
+						<div className="flexColumn header flexGrow endOnAxis mobileColumn">{this.state.studentName}</div>
+						<div className="flexRow centerOnAxis mobileColumn">
+							<div className="flexColumn itemWidth">
+								<label className="displayStyle">Student ID</label><div>{this.state.studentId}</div>
+								<label className="displayStyle">Enrollment Date</label>
+								<div>{this.state.enrollDate}</div>
 
+							</div>
+							<div className="flexColumn itemWidth">
+								<div>
+									{this.birthday()}
+									{this.isEmpty(this.state.birthday)}
+									{this.isBirthday()}
+									<label>
+										Phone Number:
+										<input type="text" name="phone" value={this.state.phone} onChange={this.handleInput}></input>
+									</label>
+									{this.isCaPhone()}
+								</div>
+								<div>
+									<label>
+										Email:
+										<input type="text" name="email" value={this.state.email} onChange={this.handleInput}></input>
+									</label>
+									{this.isEmpty(this.state.email)}
+									{this.isEmail()}
+								</div>
 
-					{this.isPostal()}
+							</div>
+							<div className="flexColumn itemWidth">
+								<div>
+									<label>
+										Previous Occupation:
+										<input type="text" name="email" value={this.state.prevOccupation} onChange={this.handleInput}></input>
+									</label>
+								</div>
+								<div>
+									<label>
+										Postal Code:
+										<input type="text" name="postalCode" value={this.state.postalCode} onChange={this.handleInput}></input>
+									</label>
+									{this.isEmpty(this.state.postalCode)}
+									{this.isPostal()}
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
 
-					{this.isCaPhone()}
-					{this.birthday()}
-					{this.isBirthday()}
-						<button onClick={this.handleClick}>Save</button>
-					</form>
-					{
-						this.displayResult()
-					}
-					<SwipeableViews enableMouseEvents>
-							{
-								this.props.outcomes.map(jobs =>
-									<div style={Object.assign({}, styles.slide, styles.slide1)}>
-										<div><Job {...jobs} /></div>
-									</div>
-								)
-							}
-  				</SwipeableViews>
-
+				<div className="jobOutcomes flexRow">
+					<div className="flexColumn">Job Outcomes<label className="swipeText">&nbsp;&nbsp;(Swipe below)</label></div>
 				</div>
-		)
-	}
+
+				<AutoPlaySwipeableViews autoplay={false} index={index} onChangeIndex={this.handleChangeIndex} enableMouseEvents>
+					{
+						this.props.outcomes.map(job =>
+
+							<div className="spaceBetweenOnAxis" key={job.id}>
+								<div><Job {...job} /></div>
+							</div>
+						)
+					}
+				</AutoPlaySwipeableViews>
+				{/* <div className="pagination">
+					{
+					this.props.outcomes.map((job,i) =>
+					<button className="dot"></button>
+					)
+
+					}
+				</div> */}
+			</div>
+)
+}
 
 }
 
